@@ -8,16 +8,29 @@ export class ParseService {
 
   parseHadesFile(f: string): any {
     console.log(f)
-    // @ts-ignore
-    let components = this.extract(f,"signals")
-    console.log(components);
+
+    return {
+      components:this.extractBlock(f,"components"),
+      signals:this.extractBlock(f,"signals"),
+      name: this.extractName(f)
+    }
 
   }
 
-  extract(f:string,s:string):string[]{
-
+  extractBlock(f:string,s:string):string[]{
     // @ts-ignore
-    return f.match(new RegExp(`\\[${s}](.*)\\[end ${s}]`,"gs"))[0].replaceAll(/(\[[^\[\]}]*])/gs,"").trim().split(/[\n\r]+/)
+    return f
+      .match(new RegExp(`\\[${s}](.*)\\[end ${s}]`,"gs"))[0]
+      .replaceAll(/(\[[^\[\]}]*])/gs,"")
+      .trim()
+      .split(/[\n\r]+/)
+      .filter(e => e !== "")
 
   }
+  extractName(f:string):string{
+    let l = f.trim().split(/[\n\r]+/)
+    return l[2].split(/\s+/)[1]
+
+  }
+
 }
